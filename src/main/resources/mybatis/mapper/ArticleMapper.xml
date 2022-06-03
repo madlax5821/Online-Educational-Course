@@ -1,0 +1,55 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.ArticleDao">
+    <resultMap id="articleMap" type="Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+    </resultMap>
+    
+    <sql id="articleColumn">id,title,content</sql>
+    
+    <select id="getArticleById" resultMap="articleMap" parameterType="long">
+        select <include refid="articleColumn"/>
+        from t_article 
+        where id=#{id}
+    </select>
+    
+    <select id="getTotalAmount" parameterType="Map" resultType="Long">
+        select count(*) from t_article
+    </select>
+    
+    <select id="getArticleList" resultMap="articleMap" parameterType="Map">
+        select <include refid="articleColumn"/> from t_article where 1=1
+            order by id
+            <if test="start!=null and size!=null">
+                limit #{start},#{size}
+            </if>
+        
+    </select>
+    
+    <insert id="saveArticle" parameterType="Article" useGeneratedKeys="true" keyProperty="id">
+        insert into t_article (title,content) values (#{title},#{content})
+    </insert>
+    
+    <update id="updateArticle" parameterType="Article">
+        update t_article
+        <set>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+            <if test="content!=null and content!=''">
+                content=#{content},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <delete id="deleteArticleById" parameterType="Long">
+        delete from t_article where id=#{id}
+    </delete>
+
+
+</mapper>

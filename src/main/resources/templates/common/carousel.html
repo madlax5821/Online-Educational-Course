@@ -1,0 +1,15 @@
+<meta charset="UTF-8">
+<div id="c">
+    <div class="w1220 carousel">
+        <div class="layui-carousel" id="test10">
+            <div carousel-item="">
+                <div th:each="ca:${application.carouselArticleList}">
+                    <a th:href="${ca.url}" target="_blank"><img th:src="'/carouselImages/'+${ca.imageName}"></a>
+                </div>
+                <!--                    <div><a href="/toPayVip" target="_blank"><img src="/carouselImages/20200710085038.png"></a></div>-->
+                <!--                    <div><a href="/article/5" target="_blank"><img src="/carouselImages/20200710112256.png"></a></div>-->
+                <!--                    <div><a href="/article/1" target="_blank"><img src="/carouselImages/20200710120817.jpg"></a></div>-->
+            </div>
+        </div>
+    </div>
+</div>

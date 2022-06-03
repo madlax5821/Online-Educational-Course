@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8"/>
+<meta name="keywords" th:content="${title}">
+<meta name="description" th:content="${title}">
+<link href="/systemImages/favicon.ico" rel="SHORTCUT ICON">
+<title th:text="${title}+'-'+${application.propertyMap['k1']}"></title>
+<link rel="stylesheet" href="/layui/css/layui.css"/>
+<link rel="stylesheet" href="/css/css.css"/>
+<link rel="stylesheet" type="content/css" href="/css/normalize.css" />
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/share.min.css">
+<head>
+    <meta charset="UTF-8">
+</head>
+
+
+<div class="header_top" th:include="common/head::#h" />
+
+
+<div class="header" th:include="common/menu::#m" />
+
+
+<div class="courseList_body">
+    <div class="w1220 searchContent">
+        <ul>
+            <li class="li_1">
+                <b>Course Catalog：</b>
+                <dd>
+                    <a onclick="selectTypeId(0)"><span id="typeId_0" class="opt">All</span></a>
+                </dd>
+                <dd th:each="courseType:${application.courseTypeList}">
+                    <a th:onclick="selectTypeId([[${courseType.id}]])" ><span th:id="'typeId_'+${courseType.id}" class="opt" th:text="${courseType.name}"></span></a>
+                </dd>
+<!--                <dd>-->
+<!--                    <a onclick="selectTypeId(2)" ><span id="typeId_2" class="opt">Java后端技术</span></a>-->
+<!--                </dd>-->
+            </li>
+            <li class="li_2">
+                <b>Course Type：</b>
+                <dd>
+                    <a onclick="selectType('all')" ><span id="type_all" class="opt">All</span></a>
+                </dd>
+                <dd>
+                    <a onclick="selectType('free')"><span id="type_free" class="opt">Free Courses</span></a>
+                    <a onclick="selectType('vip')"><span id="type_vip" class="opt">VIP Courses</span></a>
+                </dd>
+            </li>
+            <li class="li_3">
+                <b>搜索：</b>
+                &nbsp;
+                <form action="/course/list/1" method="post">
+                    <input type="text"  th:value="${name}" name="name" placeholder="请输入您要搜索的课程 " autocomplete="off" class="layui-input s_input" >
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="submit" class="layui-btn layui-btn-radius layui-btn-sm" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;搜索&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ">
+                </form>
+            </li>
+        </ul>
+    </div>
+    <div class="courseResult">
+        <div class="w1220 course">
+            <div class="course_item" th:each="course:${courseList}">
+                <a target="_blank" th:href="'/course/'+${course.id}">
+                    <b class="img">
+                        <img class="lazy" th:src="'/courseImages/'+${course.imageName}" th:alt="${course.name}" style="display: inline;">
+                    </b>
+
+                    <div class="content">
+                        <h5 th:title="${course.name}" th:text="${course.name}"></h5>
+                        <p class="word">
+                            <span th:if="${course.type=='free'}" class="free" >免费</span>
+                            <span th:if="${course.type=='vip'}" class="vip">会员</span>
+
+                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l th:text="${course.view}"></l></span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+<!--            <div class="course_item">-->
+<!--                <a target="_blank" href="/course/158">-->
+<!--                    <b class="img">-->
+<!--                        <img class="lazy" src="/courseImages/20210907094518.jpg" alt="阿里分布式消息队列RocketMQ实战课程" style="display: inline;">-->
+<!--                    </b>-->
+
+<!--                    <div class="content">-->
+<!--                        <h5 title="阿里分布式消息队列RocketMQ实战课程">阿里分布式消息队列RocketMQ实战课程</h5>-->
+<!--                        <p class="word">-->
+<!--                            <span class="free">免费</span>-->
+
+<!--                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l>233558</l></span>-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+            
+        </div>
+        <div class="w1220">
+            <div align="center" th:utext="${pageCode}"></div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="footer" th:include="common/footer::#f" />
+
+<script src="/layui/layui.js"></script>
+<script src="/js/jquery.js"></script>
+<script src="/js/jquery.share.min.js"></script>
+<script src="/js/common.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    layui.use(['element'],function (){
+        
+    });
+    
+    function selectTypeId(typeId) {
+        sessionStorage.typeId=typeId;
+        let type=sessionStorage.type;
+        let url = "/course/list/1?typeId="+typeId;
+        if (type!=undefined){
+            url+="&type="+type;
+        }
+        ;
+        window.location.href=url;
+    }
+
+    function selectType(type) {
+        sessionStorage.type=type;
+        let typeId = sessionStorage.typeId;
+        let url = "/course/list/1?type="+type;
+        if (typeId!=undefined){
+            url+="&typeId="+typeId;
+        }
+        
+        window.location.href=url;
+    }
+    
+    $(function (){
+        
+        let clearSessionStorage=[[${clearSessionStorage}]];
+        if (clearSessionStorage=='yes'){
+            sessionStorage.clear();
+            $("#typeId_0").addClass("on");
+            $("#type_all").addClass("on");
+        }else{
+            let typeId=sessionStorage.typeId;
+            let type=sessionStorage.type;
+            if(typeId==undefined){
+                $("#typeId_0").addClass("on");
+            }else{
+                $("#typeId_"+typeId).addClass("on");
+            }
+            if(type==undefined){
+                $("#type_all").addClass("on");
+            }else{
+                $("#type_"+type).addClass("on");
+            }
+        }
+    })
+    /*]]>*/
+</script>
+
+
+</body>
+</html>

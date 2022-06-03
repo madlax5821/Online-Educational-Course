@@ -1,0 +1,58 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.LinkDao">
+    <resultMap id="linkMap" type="Link">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="sort" property="sort"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+    
+    <sql id="linkColumn">id,name,url,sort,remark</sql>
+
+    <select id="linkListPage" parameterType="Map" resultMap="linkMap">
+        select <include refid="linkColumn"/>
+        from t_link order by sort
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    
+    <select id="getLinkList" resultMap="linkMap">
+        select <include refid="linkColumn"/> from t_link
+    </select>
+
+    <select id="getLinkById" resultMap="linkMap" parameterType="Long">
+        select <include refid="linkColumn"/> from t_link where id=#{id}
+    </select>
+
+    <update id="updateLink" parameterType="Link">
+        update t_link
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="url!=null and url!=''">
+                url=#{url},
+            </if>
+            <if test="sort!=null and sort!=''">
+                sort=#{sort},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="saveLink" parameterType="Link" useGeneratedKeys="true" keyProperty="id">
+        insert into t_link (name,url,sort,remark) values (#{name},#{url},#{sort},#{remark})
+    </insert>
+
+    <delete id="deleteLinkById" parameterType="Long">
+        delete from t_link where id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,54 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.MenuDao">
+    <resultMap id="menuMap" type="Menu">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="color" property="color"/>
+        <result column="strong" property="strong"/>
+        <result column="sort" property="sort"/>
+    </resultMap>
+    
+    <sql id="menuColumn">id,name,url,color,strong,sort</sql>
+
+    <select id="getMenuList" resultMap="menuMap">
+        select <include refid="menuColumn"/> from t_menu order by sort;
+    </select>
+    
+    <select id="getMenuById" parameterType="Long" resultMap="menuMap">
+        select <include refid="menuColumn"/> from t_menu where id=#{id}
+    </select>
+    
+    <insert id="saveMenu" parameterType="Menu" keyProperty="id" useGeneratedKeys="true">
+        insert into t_menu (name,url,color,strong,sort) values (#{name},#{url},#{color},#{strong},#{sort})
+    </insert>
+    
+    <update id="updateMenu" parameterType="Menu">
+        update t_menu
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="url!=null and url!=''">
+                url=#{url},
+            </if>
+            <if test="color!=null and color!=''">
+                color=#{color},
+            </if>
+            <if test="strong!=null and strong!=''">
+                strong=#{strong},
+            </if>
+            <if test="sort!=null and sort!=''">
+                sort=#{sort},
+            </if>
+        </set>
+        where id=#{id}    
+    </update>
+    
+    <delete id="deleteMenuById" parameterType="Long">
+        delete from t_menu where id=#{id}
+    </delete>
+</mapper>

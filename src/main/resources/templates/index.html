@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8"/>
+<meta name="keywords" content="java在线培训机构，java学习，java视频教程">
+<meta name="description" content="Java1234课堂是高品质的Java视频课程平台。为励志成为Java全栈工程师的程序员们，提供优质的后端技术、前端技术、数据库、服务器视频教程。">
+<link href="/systemImages/favicon.ico" rel="SHORTCUT ICON">
+<title th:text="${application.propertyMap[k1]}+'-'+${application.propertyMap[k2]}"></title>
+<link rel="stylesheet" href="/layui/css/layui.css"/>
+<link rel="stylesheet" href="/css/css.css"/>
+<link rel="stylesheet" type="content/css" href="/css/normalize.css" />
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="header_top" th:include="common/head::#h"></div>
+    
+    <div class="header" th:include="common/menu::#m"></div>
+    
+    <div class="w1220 carousel" th:include="common/carousel::#c"></div>
+    
+    <div class="w1220 course">
+        <ul>
+            <h3 class="course_title"><img src="images/item.png"> 好<span></span>课<span></span>推<span></span>荐</h3>
+            <div class="course_item" th:each="hktjCourse:${application.hktjList}">
+                <a target="_blank" th:href="'/course/'+${hktjCourse.id}">
+                    <b class="img">
+                        <img class="lazy" th:src="'/courseImages/'+${hktjCourse.imageName}" th:alt="${hktjCourse.name}" style="display: inline;">
+                    </b>
+    
+                    <div class="content">
+                        <h5 title="${hktjCourse.name}" th:text="${hktjCourse.name}"></h5>
+                        <p class="word">
+                            <span th:if="${hktjCourse.type=='vip'}" class="vip">会员</span>
+                            <span th:if="${hktjCourse.type=='free'}"class="free">免费</span>
+                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l th:text="${hktjCourse.view}"></l></span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </ul>    
+<!--            <div class="course_item">-->
+<!--                <a target="_blank" href="/course/76">-->
+<!--                    <b class="img">-->
+<!--                        <img class="lazy" src="/courseImages/20200710085353.jpg" alt="SSM博客系统视频教程" style="display: inline;">-->
+<!--                    </b>-->
+<!--    -->
+<!--                    <div class="content">-->
+<!--                        <h5 title="SSM博客系统视频教程">SSM博客系统视频教程</h5>-->
+<!--                        <p class="word">-->
+<!--    -->
+<!--                            <span class="vip">会员</span>-->
+<!--                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l>88953</l></span>-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+         
+            
+        <ul>
+            <h3 class="course_title"><img src="images/item.png">最<span></span>新<span></span>课<span></span>程</h3>
+            <div class="course_item" th:each="zxkcCourse:${application.zxkcList}">
+                <a th:href="'/course/'+${zxkcCourse.id}">
+                    <b class="img">
+                        <img class="lazy" th:src="'/courseImages/'+${zxkcCourse.imageName}" th:alt="${zxkcCourse.name}" style="display: inline;">
+                    </b>
+
+                    <div class="content">
+                        <h5 th:title="${zxkcCourse.name}" th:text="${zxkcCourse.name}"></h5>
+                        <p class="word">
+
+                            <span th:if="${zxkcCourse.type=='vip'}" class="vip">会员</span>
+                            <span th:if="${zxkcCourse.type=='free'}" class="free">免费</span>
+                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l th:text="${zxkcCourse.view}"></l></span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </ul>
+
+        <ul>
+            <h3 class="course_title"><img src="images/item.png"> 免<span></span>费<span></span>课<span></span>程</h3>
+            <div class="course_item" th:each="mfkcCourse:${application.mfkcList}">
+                <a th:href="'/course/'+${mfkcCourse.id}">
+                    <b class="img">
+                        <img class="lazy" th:src="'/courseImages/'+${mfkcCourse.imageName}" th:alt="${mfkcCourse.name}" style="display: inline;">
+                    </b>
+
+                    <div class="content">
+                        <h5 th:title="${mfkcCourse.name}" th:text="${mfkcCourse.name}"></h5>
+                        <p class="word">
+
+                            <span  class="free">免费</span>
+                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l th:text="${mfkcCourse.view}"></l></span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </ul>
+
+        <ul>
+            <h3 class="course_title"><img src="images/item.png"> 实<span></span>战<span></span>推<span></span>荐</h3>
+            <div class="course_item" th:each="szkcCourse:${application.szkcList}">
+                <a th:href="'/course/'+${szkcCourse.id}">
+                    <b class="img">
+                        <img class="lazy" th:src="'/courseImages/'+${szkcCourse.imageName}" th:alt="${szkcCourse.name}" style="display: inline;">
+                    </b>
+
+                    <div class="content">
+                        <h5 th:title="${szkcCourse.name}" th:text="${szkcCourse.name}"></h5>
+                        <p class="word">
+                            <span th:if="${szkcCourse.type=='vip'}" class="vip">会员</span>
+                            <span th:if="${szkcCourse.type=='free'}" class="free">免费</span>
+                            <span class="ren"><i class="fa fa-eye"></i>&nbsp;<l th:text="${szkcCourse.view}"></l></span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </ul>
+    </div>
+
+    <div class="footer" th:include="common/footer::#f"/>
+    
+<script src="/layui/layui.js"></script>
+<script src="/js/jquery.js"></script>
+<script src="/js/common.js"></script>
+<script>
+    layui.use(['carousel','element','form','table'], function(){
+        var carousel = layui.carousel;
+
+
+        //图片轮播
+        carousel.render({
+            elem: '#test10'
+            ,width: '1210px'
+            ,height: '440px'
+            ,interval: 5000
+            ,arrow: 'none'
+        });
+
+    });
+</script>
+
+</body>
+</html>

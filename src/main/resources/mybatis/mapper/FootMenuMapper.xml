@@ -1,0 +1,48 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.FootMenuDao">
+    <resultMap id="footMenuMap" type="FootMenu">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <result property="sort" column="sort"/>
+    </resultMap>
+    
+    <sql id="footMenuColumn">id,name,url,sort</sql>
+    
+    <select id="getAllFootMenus" resultMap="footMenuMap">
+        select <include refid="footMenuColumn"/>
+        from t_foot_menu order by sort
+    </select>
+    
+    <select id="getFootMenuById" resultMap="footMenuMap" parameterType="Long">
+        select <include refid="footMenuColumn"/> from t_foot_menu where id=#{id}
+    </select>
+    
+    <update id="updateFootMenu" parameterType="FootMenu">
+        update t_foot_menu 
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="url!=null and url!=''">
+                url=#{url},
+            </if>
+            <if test="sort!=null and sort!=''">
+                sort=#{sort},
+            </if>
+        </set>
+        where id=#{id}    
+    </update>
+    
+    <insert id="saveFootMenu" parameterType="Menu" useGeneratedKeys="true" keyProperty="id">
+        insert into t_foot_menu (name,url,sort) values (#{name},#{url},#{sort})
+    </insert>
+    
+    <delete id="deleteFootMenuById" parameterType="Long">
+        delete from t_foot_menu where id=#{id}
+    </delete>
+
+</mapper>

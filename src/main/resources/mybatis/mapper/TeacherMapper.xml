@@ -1,0 +1,79 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.TeacherDao">
+    <resultMap id="teacherMap" type="Teacher">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="remark" column="remark"/>
+        <result property="imageName" column="image_name"/>
+        <collection property="courses" ofType="Course">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </collection>
+    </resultMap>
+    
+    <sql id="teacherColumn">
+        t.id, 
+        t.username,
+        t.remark,
+        t.image_name
+    </sql>
+    
+    <select id="getTeacherByCourseId" resultMap="teacherMap" parameterType="long">
+        select <include refid="teacherColumn"/>
+        from t_teacher t 
+        left join t_course c
+        on t.id=c.teacher_id
+        where c.id =#{id}
+    </select>
+    
+    <select id="getTeacherByCourseName" resultMap="teacherMap" parameterType="string">
+        select <include refid="teacherColumn"/>
+        from t_teacher t
+        left join t_course c
+        on t.id=c.teacher_id
+        where c.name=#{name}
+    </select>
+    
+    <select id="getTeacherById" resultMap="teacherMap" parameterType="long">
+        select <include refid="teacherColumn"/>
+        from t_teacher t
+        where t.id=#{id}
+    </select>
+    
+    <select id="getAllTeachers" resultMap="teacherMap">
+        select <include refid="teacherColumn"/>
+        from t_teacher t;
+    </select>
+    
+    <insert id="saveTeacher" parameterType="Teacher" useGeneratedKeys="true" keyProperty="id">
+        insert into t_teacher
+        (username,remark,image_name)
+        values 
+        (#{username},#{remark},#{imageName})
+    </insert>
+    
+    <update id="updateTeacher" parameterType="Teacher">
+        update t_teacher t
+        <set>
+            <if test="username!=null and username!=''">
+                username=#{username},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark},
+            </if>
+            <if test="imageName!=null and imageName!=''">
+                image_name=#{imageName}
+            </if>
+        </set>
+        where t.id=#{id}
+    </update>
+    
+    <delete id="deleteTeacherById" parameterType="Long">
+        delete from t_teacher
+        where id=#{id}
+    </delete>
+
+</mapper>

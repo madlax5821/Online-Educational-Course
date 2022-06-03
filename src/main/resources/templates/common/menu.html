@@ -1,0 +1,26 @@
+<meta charset="UTF-8">
+<div id="m">
+    <a href="/" class="logo" ></a>
+    <ul class="nav">
+        <li th:each="menu:${application.menuList}">
+            <a th:href="${menu.url}" th:style="'color:'+${menu.color}+'; font-weight:'+${menu.strong==true?'bold':'normal'}" th:text="${menu.name}"></a>
+            <!--            </li>-->
+            <!--            <li><a href="/" style="color:black;font-weight:normal">首页</a></li>-->
+            <!--            <li><a href="/course/list" style="color:black;font-weight:normal">课程</a></li>-->
+            <!--            <li><a href="/article/1" style="color:black;font-weight:bold">Java全栈学习路线图</a></li>-->
+            <!--            <li><a href="/toPayVip" style="color:red;font-weight:bold">VIP会员</a></li>-->
+            <!--            <li><a href="/article/5" style="color:#000000;font-weight:bold">java1234门徒服务</a></li>-->
+            <!--            <li><a href="/article/14" style="color:#e11717;font-weight:bold">关于锋哥</a></li>-->
+    </ul>
+
+    <div class="searchAndLogin">
+        <div class="search d7">
+            <form action="/course/list/1" method="post">
+                <input  type="text" name="name" placeholder="搜索从这里开始..." autocomplete="off" th:value="${name}">
+                <button type="submit"></button>
+            </form>
+        </div>
+        <div class="login">
+        </div>
+    </div>
+</div>

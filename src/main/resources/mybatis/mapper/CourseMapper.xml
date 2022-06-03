@@ -1,0 +1,305 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.CourseDao">
+    
+   <resultMap id="courseMap" type="Course">
+       <id column="id" property="id"/>
+       <result column="name" property="name"/>
+       <result column="image_name" property="imageName"/>
+       <result column="type" property="type"/>
+       <result column="view" property="view"/>
+       <result column="introduction" property="introduction"/>
+       <result column="catalog" property="catalog"/>
+       <result column="download" property="download"/>
+       <result column="url" property="url"/>
+       <result column="hktj" property="hktj"/>
+       <result column="sort1" property="sort1"/>
+       <result column="zxkc" property="zxkc"/>
+       <result column="sort2" property="sort2"/>
+       <result column="mfkc" property="mfkc"/>
+       <result column="sort3" property="sort3"/>
+       <result column="szkc" property="szkc"/>
+       <result column="sort4" property="sort4"/>
+       <association property="teacher" javaType="Teacher">
+           <id property="id" column="tId"/>
+           <result property="username" column="username"/>
+           <result property="remark" column="remark"/>
+           <result property="imageName" column="tImageName"/>
+       </association>
+       <association property="courseType" javaType="CourseType">
+           <id property="id" column="ctId"/>
+           <result property="name" column="ctName"/>
+           <result property="sort" column="sort"/>
+           <result property="remark" column="ctRemark"/>
+       </association>
+   </resultMap>
+    
+    <resultMap id="lazyCourseMap" type="Course">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="image_name" property="imageName"/>
+        <result column="type" property="type"/>
+        <result column="view" property="view"/>
+        <result column="introduction" property="introduction"/>
+        <result column="catalog" property="catalog"/>
+        <result column="download" property="download"/>
+        <result column="url" property="url"/>
+        <result column="hktj" property="hktj"/>
+        <result column="sort1" property="sort1"/>
+        <result column="zxkc" property="zxkc"/>
+        <result column="sort2" property="sort2"/>
+        <result column="mfkc" property="mfkc"/>
+        <result column="sort3" property="sort3"/>
+        <result column="szkc" property="szkc"/>
+        <result column="sort4" property="sort4"/>
+        <association property="teacher" column="teacher_id" javaType="Teacher">
+            <id column="tId" property="id"/>
+        </association>
+        <association property="courseType" column="type_id" javaType="CourseType">
+            <id column="ctId" property="id"/>
+        </association>
+    </resultMap>
+    
+    <sql id="courseColumn">
+        c.id,c.name,c.image_name,c.type,c.view,c.introduction,c.catalog,c.download,c.url,c.hktj,c.sort1,c.zxkc,c.sort2,
+        c.mfkc,c.sort3,c.szkc,c.sort4,
+        t.id 'tId',t.username,t.remark,t.image_name 'tImageName',
+        ct.id 'ctId',ct.name 'ctName',ct.sort,ct.remark 'ctRemark'
+    </sql>
+    
+    <sql id="lazyCourseColumn">
+        c.id,c.name,c.image_name,c.type,c.view,c.introduction,c.catalog,c.download,c.url,c.hktj,c.sort1,c.zxkc,c.sort2,
+        c.mfkc,c.sort3,c.szkc,c.sort4,c.teacher_id 'tId',c.type_id 'ctId'
+    </sql>
+    
+    <sql id="conditionalSearchQuery">
+        <where>
+            <if test="name!=null and name!=''">
+                and c.name like concat ('%',#{name},'%')
+            </if>
+            <if test="typeId!=null and typeId!=0">
+                and type_id=#{typeId}
+            </if>
+        <!--    <if test="type!=null and type!='all'">
+                and type=#{type}
+            </if>-->
+            <if test="type=='free'">
+                and type='free'
+            </if>
+            <if test="type=='vip'">
+                and type='vip'
+            </if>
+        </where>
+    </sql>
+    
+    <select id="adminSearchCourses" resultMap="courseMap" parameterType="Map">
+        select <include refid="courseColumn"/> from t_course c
+        left join t_course_type ct on c.type_id=ct.id
+        left join t_teacher t on c.teacher_id=t.id
+        <include refid="conditionalSearchQuery"/>
+        order by c.id desc 
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    
+    
+    <select id="searchCourseByConditions" parameterType="Map" resultMap="lazyCourseMap">
+        select <include refid="lazyCourseColumn"/> from t_course c
+        <include refid="conditionalSearchQuery"/>
+        order by id desc 
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    
+    <select id="getTotalAmount" parameterType="Map" resultType="Long">
+        select count(*) from t_course c
+        <include refid="conditionalSearchQuery"/>
+    </select>
+
+    <select id="getHktjList" resultMap="lazyCourseMap">
+        select <include refid="lazyCourseColumn"/> 
+        from t_course c where hktj=true order by sort1 limit 0,10
+    </select>
+    
+    <select id="adminSearchHktj" resultMap="courseMap">
+        select <include refid="courseColumn"/>
+        from t_course c
+        left join t_course_type ct on c.type_id=ct.id
+        left join t_teacher t on c.teacher_id=t.id
+        where c.hktj=true order by sort1
+    </select>
+
+    <select id="adminSearchZxkc" resultMap="courseMap">
+        select <include refid="courseColumn"/>
+        from t_course c
+        left join t_course_type ct on c.type_id=ct.id
+        left join t_teacher t on c.teacher_id=t.id
+        where c.zxkc=true order by sort2
+    </select>
+
+    <select id="adminSearchMfkc" resultMap="courseMap">
+        select <include refid="courseColumn"/>
+        from t_course c
+        left join t_course_type ct on c.type_id=ct.id
+        left join t_teacher t on c.teacher_id=t.id
+        where c.mfkc=true order by sort3
+    </select>
+
+    <select id="adminSearchSzkc" resultMap="courseMap">
+        select <include refid="courseColumn"/>
+        from t_course c
+        left join t_course_type ct on c.type_id=ct.id
+        left join t_teacher t on c.teacher_id=t.id
+        where c.szkc=true order by sort4
+    </select>
+    
+    <select id="getZxkcList" resultMap="courseMap">
+        select * from t_course where zxkc=true order by sort2 limit 0,10
+    </select>
+    <select id="getMfkcList" resultMap="courseMap">
+        select * from t_course where mfkc=true and type='free' order by sort3 limit 0,10
+    </select>
+    <select id="getSzkcList" resultMap="courseMap">
+        select * from t_course where szkc=true and type='vip' order by sort4 limit 0,10
+    </select>
+    <select id="getCourseByCourseId" resultMap="courseMap" parameterType="long">
+        select <include refid="courseColumn"/> 
+        from t_course c
+            left join t_teacher t on 
+                c.teacher_id=t.id
+            left join t_course_type ct on 
+                c.type_id=ct.id
+        where c.id=#{id}
+    </select>
+    <select id="lazyFetchCourseByCourseId" resultMap="lazyCourseMap" parameterType="long">
+        select <include refid="lazyCourseColumn"/> 
+        from t_course c
+            left join t_teacher t on
+                c.teacher_id=t.id
+            left join t_course_type ct on
+                c.type_id=ct.id
+        where c.id=#{id}
+    </select>
+    
+    <update id="updateCourse" parameterType="Course">
+        update t_course
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="teacher.id!=null">
+                teacher_id=#{teacher.id},
+            </if>
+            <if test="courseType.id!=null">
+                type_id=#{courseType.id},
+            </if>
+            <if test="imageName!=null and imageName!=''">
+                image_name=#{imageName},
+            </if>
+            <if test="type!=null and type!=''">
+                type=#{type},
+            </if>
+            <if test="view!=null">
+                view=#{view},
+            </if>
+            <if test="introduction!=null and introduction!=''">
+                introduction=#{introduction},
+            </if>
+            <if test="catalog!=null and catalog!=''">
+                catalog=#{catalog},
+            </if>
+            <if test="download!=null and download!=''">
+                download=#{download},
+            </if>
+            <if test="url!=null and url!=''">
+                url=#{url},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <update id="updateHktj" parameterType="Course">
+        update t_course c 
+        <set>
+            <if test="hktj!=null">
+                hktj=#{hktj},
+            </if>
+            <if test="sort1!=null">
+                sort1=#{sort1},
+            </if>
+        </set>
+        where c.id=#{id}
+    </update>
+
+    <update id="updateSzkc" parameterType="Course">
+        update t_course c
+        <set>
+            <if test="szkc!=null">
+                szkc=#{szkc},
+            </if>
+            <if test="sort4!=null">
+                sort4=#{sort4},
+            </if>
+        </set>
+        where c.id=#{id}
+    </update>
+
+    <update id="updateZxkc" parameterType="Course">
+        update t_course c
+        <set>
+            <if test="zxkc!=null">
+                zxkc=#{zxkc},
+            </if>
+            <if test="sort2!=null">
+                sort2=#{sort2},
+            </if>
+        </set>
+        where c.id=#{id}
+    </update>
+
+    <update id="updateMfkc" parameterType="Course">
+        update t_course c
+        <set>
+            <if test="mfkc!=null">
+                mfkc=#{mfkc},
+            </if>
+            <if test="sort3!=null">
+                sort3=#{sort3},
+            </if>
+        </set>
+        where c.id=#{id}
+    </update>
+    
+    <select id="getRecommendCourseList" resultMap="lazyCourseMap">
+        select <include refid="lazyCourseColumn"/>
+        from t_course c order by rand() limit 10;
+    </select>
+    
+    <select id="getCoursesByCourseType" resultMap="lazyCourseMap" parameterType="long">
+        select <include refid="lazyCourseColumn"/>
+        from t_course c where c.type_id=#{id}
+    </select>
+    
+    <select id="getCoursesByIfFree" resultMap="lazyCourseMap">
+        select <include refid="lazyCourseColumn"/>
+        from t_course c
+        
+    </select>
+    
+    <delete id="deleteCourseById" parameterType="Long">
+        delete from t_course c
+        where id=#{id}
+    </delete>
+    
+    <insert id="saveCourse" parameterType="Course" useGeneratedKeys="true" keyProperty="id">
+        insert into t_course
+            (name,image_name,type,view,introduction,catalog,download,url,hktj,sort1,zxkc,sort2,mfkc,sort3,szkc,sort4,type_id,teacher_id)
+            values
+            (#{name},#{imageName},#{type},#{view},#{introduction},#{catalog},#{download},#{url},#{hktj},#{sort1},#{zxkc},#{sort2},#{mfkc},#{sort3},#{szkc},#{sort4},#{courseType.id},#{teacher.id}
+          )
+    </insert>
+</mapper>

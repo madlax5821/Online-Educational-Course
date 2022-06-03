@@ -1,0 +1,78 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiaofei.mybatisDao.CourseTypeDao">
+    <resultMap id="courseTypeMap" type="CourseType">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sort" column="sort"/>
+        <result property="remark" column="remark"/>
+        <collection property="courses" ofType="Course">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </collection>
+    </resultMap>
+    
+    <sql id="courseTypeColumn">
+        ct.id, 
+        ct.name,
+        ct.remark,
+        ct.sort
+    </sql>
+    
+    <select id="getCourseTypeByCourseId" resultMap="courseTypeMap" parameterType="long">
+        select <include refid="courseTypeColumn"/>
+        from t_course_type ct
+        left join t_course c
+        on ct.id=c.type_id
+        where c.id=#{id}
+    </select>
+    
+    <select id="getCourseTypeByCourseName" resultMap="courseTypeMap" parameterType="string">
+        select <include refid="courseTypeColumn"/>
+        from t_course_type ct
+        left join t_course c
+        on ct.id=c.type_id
+        where c.name=#{name}
+    </select>
+    
+    <select id="getAllCourseTypes" resultMap="courseTypeMap">
+        select <include refid="courseTypeColumn"/>
+        from t_course_type ct order by sort;
+    </select>
+    
+    <select id="getCourseTypeById" resultMap="courseTypeMap" parameterType="long">
+        select <include refid="courseTypeColumn"/>
+        from t_course_type ct
+        where id=#{id}
+    </select>
+    
+    <insert id="saveCourseType" parameterType="CourseType" keyProperty="id" useGeneratedKeys="true" >
+        insert into t_course_type
+        (name,sort,remark) 
+        values 
+        (#{name},#{sort},#{remark})
+    </insert>
+    
+    <update id="updateCourseType" parameterType="CourseType">
+        update t_course_type
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="sort!=null and sort!=''">
+                sort=#{sort},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    
+    <delete id="deleteCourseType" parameterType="Long">
+        delete from t_course_type ct
+        where id=#{id}
+    </delete>
+</mapper>
